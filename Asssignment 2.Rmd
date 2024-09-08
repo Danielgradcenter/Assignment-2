@@ -1,0 +1,91 @@
+---
+title: "Assignment 2"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-09-08"
+---
+
+```{r setup, include=FALSE}
+
+# read in cvs file created from CSV
+data <- read.csv("C:/Users/dbrusche/Desktop/Homework 2.csv")
+
+# Display the first few rows of the data frame
+head(data)
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+#recoding Movie ID into Movie title 
+#install.packages("dplyr")  # Install dplyr if you haven't already
+library(dplyr)             # Load dplyr
+data <- data %>%
+  mutate(Movies.ID = recode(Movies.ID, 
+                             `1` = "A quiet place", 
+                             `2` = "Abigail", 
+                             `3` = "Alien", 
+                             `4` = "Beetlejuice", 
+                             `5` = "The Crow", 
+                         `6` = "The watchers"))
+
+#removing 0 from Rating score 
+   data$rating[data$rating == 0] <- NA 
+
+# removing NA 
+   
+data <- data[complete.cases(data$rating), ]
+   
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+
+# Load necessary packages
+library(ggplot2)
+
+# Corrected data frame with numerical ratings and descriptive labels
+data <- data.frame(
+  Movie = c("A Quiet Place", "Abigail", "Alien", "Beetlejuice", "The Crow"),
+  rating = c(4, 3, 2, 5, 1)  # Use numerical values for ratings
+)
+
+# Map numerical ratings to descriptive labels
+rating_labels <- c('1' = "Bad", '2' = "Alright", '3' = "Average", '4' = "Great", '5' = "Amazing")
+data$rating_label <- factor(rating_labels[as.character(data$rating)], levels = rating_labels)
+
+# Create a bar plot of ratings by movie
+ggplot(data, aes(x = reorder(Movie, rating), y = rating, fill = rating_label)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +  # Flip coordinates for better readability
+  scale_fill_manual(values = c("Bad" = "red", "Alright" = "orange", "Average" = "yellow", "Great" = "lightgreen", "Amazing" = "green")) +
+  labs(title = "Ratings by Movie",
+       x = "Movie",
+       y = "Rating",
+       fill = "Rating Label") +
+  theme_minimal()
+
+
+
+
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+
